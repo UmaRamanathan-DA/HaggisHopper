@@ -1,5 +1,5 @@
 ### HaggisHopper
-Analyzing taxi trip data for Haggis Hoppers to uncover insights about trip patterns, demand hotspots, revenue zones, and operational efficiency. The analysis supports data-driven decision-making for optimizing taxi operations.
+Leveraging K-Means clustering and advanced visual analysis and ML forecasting models to gather business insights for fleet optimization, enhance operational efficiency, design targeted customer-centric promotions.
 
 **Data Preprocessing**
 - Cleaned and prepared trip data.
