@@ -15,13 +15,20 @@ import xgboost as xgb
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from statsmodels.tsa.statespace.sarimax import SARIMAX
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout
-from tensorflow.keras.optimizers import Adam
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.metrics import silhouette_score
+
+# Try to import TensorFlow/Keras with fallback
+try:
+    from tensorflow.keras.models import Sequential
+    from tensorflow.keras.layers import LSTM, Dense, Dropout
+    from tensorflow.keras.optimizers import Adam
+    TENSORFLOW_AVAILABLE = True
+except ImportError:
+    TENSORFLOW_AVAILABLE = False
+    st.warning("TensorFlow not available. LSTM models will be skipped.")
 
 # Custom CSS to make expander headers bold and larger
 st.markdown("""
@@ -1165,6 +1172,10 @@ if df is not None:
                         
                         # Helper function for LSTM model
                         def train_lstm_model(train_data, test_data, lookback=24):
+                            if not TENSORFLOW_AVAILABLE:
+                                st.info("TensorFlow not available. Skipping LSTM model.")
+                                return np.full(len(test_data), train_data.mean())
+                            
                             try:
                                 # Prepare data for LSTM
                                 scaler = MinMaxScaler()
@@ -1208,7 +1219,8 @@ if df is not None:
                                 full_predictions[lookback:] = predictions_original.flatten()
                                 
                                 return full_predictions
-                            except:
+                            except Exception as e:
+                                st.warning(f"LSTM model failed: {str(e)}. Using fallback.")
                                 # Fallback to simple moving average if LSTM fails
                                 return np.full(len(test_data), train_data.mean())
                         
@@ -1246,20 +1258,23 @@ if df is not None:
                             'Model': 'SARIMA'
                         }
                         
-                        # Train LSTM model
-                        lstm_pred = train_lstm_model(y_train, y_test)
-                        predictions['LSTM'] = lstm_pred
-                        mae = mean_absolute_error(y_test, lstm_pred)
-                        mse = mean_squared_error(y_test, lstm_pred)
-                        rmse = np.sqrt(mse)
-                        r2 = r2_score(y_test, lstm_pred)
-                        model_results['LSTM'] = {
-                            'MAE': mae,
-                            'MSE': mse,
-                            'RMSE': rmse,
-                            'R²': r2,
-                            'Model': 'LSTM'
-                        }
+                        # Train LSTM model (only if TensorFlow is available)
+                        if TENSORFLOW_AVAILABLE:
+                            lstm_pred = train_lstm_model(y_train, y_test)
+                            predictions['LSTM'] = lstm_pred
+                            mae = mean_absolute_error(y_test, lstm_pred)
+                            mse = mean_squared_error(y_test, lstm_pred)
+                            rmse = np.sqrt(mse)
+                            r2 = r2_score(y_test, lstm_pred)
+                            model_results['LSTM'] = {
+                                'MAE': mae,
+                                'MSE': mse,
+                                'RMSE': rmse,
+                                'R²': r2,
+                                'Model': 'LSTM'
+                            }
+                        else:
+                            st.info("LSTM model skipped - TensorFlow not available")
                         
                         # 4. Model Comparison Table
                         st.markdown("##### Model Performance Comparison")
