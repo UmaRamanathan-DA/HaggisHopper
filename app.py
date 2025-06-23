@@ -7,18 +7,55 @@ import os
 import io
 from contextlib import redirect_stdout
 import time
-import plotly.express as px
-import geopandas as gpd
-import holidays
-import lightgbm as lgb
-import xgboost as xgb
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from statsmodels.tsa.statespace.sarimax import SARIMAX
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.metrics import silhouette_score
+
+# Try to import optional packages with fallbacks
+try:
+    import plotly.express as px
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    PLOTLY_AVAILABLE = False
+    st.warning("Plotly not available. Interactive charts will use matplotlib instead.")
+
+try:
+    import geopandas as gpd
+    GEOPANDAS_AVAILABLE = True
+except ImportError:
+    GEOPANDAS_AVAILABLE = False
+    st.warning("Geopandas not available. Geospatial features will be limited.")
+
+try:
+    import holidays
+    HOLIDAYS_AVAILABLE = True
+except ImportError:
+    HOLIDAYS_AVAILABLE = False
+    st.warning("Holidays package not available. Holiday features will be simulated.")
+
+try:
+    import lightgbm as lgb
+    LIGHTGBM_AVAILABLE = True
+except ImportError:
+    LIGHTGBM_AVAILABLE = False
+    st.warning("LightGBM not available. Will use Random Forest instead.")
+
+try:
+    import xgboost as xgb
+    XGBOOST_AVAILABLE = True
+except ImportError:
+    XGBOOST_AVAILABLE = False
+    st.warning("XGBoost not available. Will use Random Forest instead.")
+
+try:
+    from statsmodels.tsa.statespace.sarimax import SARIMAX
+    SARIMAX_AVAILABLE = True
+except ImportError:
+    SARIMAX_AVAILABLE = False
+    st.warning("SARIMAX not available. Time series forecasting will be limited.")
 
 # Try to import TensorFlow/Keras with fallback
 try:
@@ -28,7 +65,7 @@ try:
     TENSORFLOW_AVAILABLE = True
 except ImportError:
     TENSORFLOW_AVAILABLE = False
-    st.warning("TensorFlow not available. LSTM models will be skipped.")
+    st.info("TensorFlow not available. LSTM models will be skipped.")
 
 # Custom CSS to make expander headers bold and larger
 st.markdown("""
@@ -1147,12 +1184,21 @@ if df is not None:
                         X_train, X_test = X[:-24], X[-24:]
                         y_train, y_test = y[:-24], y[-24:]
                         
-                        # Train five different models
-                        models = {
-                            'LightGBM': lgb.LGBMRegressor(random_state=42, verbose=-1),
-                            'XGBoost': xgb.XGBRegressor(random_state=42, verbosity=0),
-                            'Random Forest': RandomForestRegressor(random_state=42, n_estimators=100)
-                        }
+                        # Train models based on available packages
+                        models = {}
+                        
+                        if LIGHTGBM_AVAILABLE:
+                            models['LightGBM'] = lgb.LGBMRegressor(random_state=42, verbose=-1)
+                        
+                        if XGBOOST_AVAILABLE:
+                            models['XGBoost'] = xgb.XGBRegressor(random_state=42, verbosity=0)
+                        
+                        # Always include Random Forest as fallback
+                        models['Random Forest'] = RandomForestRegressor(random_state=42, n_estimators=100)
+                        
+                        if not models:
+                            st.error("No machine learning models available. Please install required packages.")
+                            return
                         
                         model_results = {}
                         predictions = {}
@@ -1243,20 +1289,23 @@ if df is not None:
                                 'Model': model
                             }
                         
-                        # Train SARIMA model
-                        sarima_pred = train_sarima_model(y_train, y_test)
-                        predictions['SARIMA'] = sarima_pred
-                        mae = mean_absolute_error(y_test, sarima_pred)
-                        mse = mean_squared_error(y_test, sarima_pred)
-                        rmse = np.sqrt(mse)
-                        r2 = r2_score(y_test, sarima_pred)
-                        model_results['SARIMA'] = {
-                            'MAE': mae,
-                            'MSE': mse,
-                            'RMSE': rmse,
-                            'R²': r2,
-                            'Model': 'SARIMA'
-                        }
+                        # Train SARIMA model (only if SARIMAX is available)
+                        if SARIMAX_AVAILABLE:
+                            sarima_pred = train_sarima_model(y_train, y_test)
+                            predictions['SARIMA'] = sarima_pred
+                            mae = mean_absolute_error(y_test, sarima_pred)
+                            mse = mean_squared_error(y_test, sarima_pred)
+                            rmse = np.sqrt(mse)
+                            r2 = r2_score(y_test, sarima_pred)
+                            model_results['SARIMA'] = {
+                                'MAE': mae,
+                                'MSE': mse,
+                                'RMSE': rmse,
+                                'R²': r2,
+                                'Model': 'SARIMA'
+                            }
+                        else:
+                            st.info("SARIMA model skipped - SARIMAX not available")
                         
                         # Train LSTM model (only if TensorFlow is available)
                         if TENSORFLOW_AVAILABLE:
@@ -1277,9 +1326,10 @@ if df is not None:
                             st.info("LSTM model skipped - TensorFlow not available")
                         
                         # 4. Model Comparison Table
+                        num_models = len(model_results)
                         st.markdown("##### Model Performance Comparison")
-                        st.markdown("""
-                        We've trained five different forecasting models to determine which performs best for Haggis Hopper's demand prediction needs:
+                        st.markdown(f"""
+                        We've trained {num_models} different forecasting models to determine which performs best for Haggis Hopper's demand prediction needs:
                         """)
                         
                         # Create comparison table
