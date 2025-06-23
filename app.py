@@ -1378,27 +1378,42 @@ if df is not None:
                         results_df.index = df_ts['timestamp_dt'][-24:]
                         
                         # Create a more intuitive plot with better hover labels
-                        fig_forecast = px.line(
-                            results_df.reset_index(),
-                            x='timestamp_dt',
-                            y=['Actual', 'Predicted'],
-                            title=f"Forecast vs. Actual Demand (Last 24 Hours) - {best_model_name}",
-                            labels={
-                                'timestamp_dt': 'Time',
-                                'value': 'Number of Trips',
-                                'variable': 'Type'
-                            }
-                        )
-                        fig_forecast.update_layout(
-                            xaxis_title="Time",
-                            yaxis_title="Number of Trips",
-                            hovermode='x unified',
-                            xaxis_title_font_size=14,
-                            yaxis_title_font_size=14,
-                            xaxis_title_font_color="black",
-                            yaxis_title_font_color="black"
-                        )
-                        st.plotly_chart(fig_forecast, use_container_width=True)
+                        if PLOTLY_AVAILABLE:
+                            fig_forecast = px.line(
+                                results_df.reset_index(),
+                                x='timestamp_dt',
+                                y=['Actual', 'Predicted'],
+                                title=f"Forecast vs. Actual Demand (Last 24 Hours) - {best_model_name}",
+                                labels={
+                                    'timestamp_dt': 'Time',
+                                    'value': 'Number of Trips',
+                                    'variable': 'Type'
+                                }
+                            )
+                            fig_forecast.update_layout(
+                                xaxis_title="Time",
+                                yaxis_title="Number of Trips",
+                                hovermode='x unified',
+                                xaxis_title_font_size=14,
+                                yaxis_title_font_size=14,
+                                xaxis_title_font_color="black",
+                                yaxis_title_font_color="black"
+                            )
+                            st.plotly_chart(fig_forecast, use_container_width=True)
+                        else:
+                            # Matplotlib fallback
+                            fig, ax = plt.subplots(figsize=(12, 6))
+                            ax.plot(results_df.index, results_df['Actual'], label='Actual', marker='o')
+                            ax.plot(results_df.index, results_df['Predicted'], label='Predicted', marker='s')
+                            ax.set_title(f"Forecast vs. Actual Demand (Last 24 Hours) - {best_model_name}")
+                            ax.set_xlabel("Time")
+                            ax.set_ylabel("Number of Trips")
+                            ax.legend()
+                            ax.grid(True, alpha=0.3)
+                            plt.xticks(rotation=45)
+                            plt.tight_layout()
+                            st.pyplot(fig)
+                            plt.close()
 
                         st.metric("Mean Absolute Error (MAE)", f"{best_mae:.2f} trips", help="On average, the forecast is off by this many trips. Lower is better.")
 
@@ -1474,15 +1489,27 @@ if df is not None:
                         st.write("This chart shows which factors the model found most influential when making its predictions. A higher value indicates a greater impact on the forecast. The importance is calculated based on the number of times each feature is used to make a split in a decision tree within the model (a technique known as 'split' importance).")
 
                         # Create and display the feature importance chart
-                        fig_imp = px.bar(
-                            feature_imp.sort_values(by="Value", ascending=True),
-                            x="Value",
-                            y="Feature",
-                            orientation='h',
-                            title="Feature Importance for Enhanced Demand Forecast"
-                        )
-                        fig_imp.update_layout(yaxis_title="Feature", xaxis_title="Importance Value")
-                        st.plotly_chart(fig_imp, use_container_width=True)
+                        if PLOTLY_AVAILABLE:
+                            fig_imp = px.bar(
+                                feature_imp.sort_values(by="Value", ascending=True),
+                                x="Value",
+                                y="Feature",
+                                orientation='h',
+                                title="Feature Importance for Enhanced Demand Forecast"
+                            )
+                            fig_imp.update_layout(yaxis_title="Feature", xaxis_title="Importance Value")
+                            st.plotly_chart(fig_imp, use_container_width=True)
+                        else:
+                            # Matplotlib fallback
+                            fig, ax = plt.subplots(figsize=(10, 8))
+                            sorted_features = feature_imp.sort_values(by="Value", ascending=True)
+                            ax.barh(sorted_features['Feature'], sorted_features['Value'])
+                            ax.set_title("Feature Importance for Enhanced Demand Forecast")
+                            ax.set_xlabel("Importance Value")
+                            ax.set_ylabel("Feature")
+                            plt.tight_layout()
+                            st.pyplot(fig)
+                            plt.close()
 
                         # Enhanced Feature Explanations
                         st.markdown("**Explanation of Key Features:**")
@@ -1606,26 +1633,32 @@ if df is not None:
                         geojson_url = "https://martinjc.github.io/UK-GeoJSON/json/gb/postcode_districts_by_area/G.json"
                         
                         # 3. Create Choropleth map
-                        fig = px.choropleth_mapbox(
-                            pickup_revenue,
-                            geojson=geojson_url,
-                            locations='Pickup Area',
-                            featureidkey="properties.name",
-                            color='Total Revenue',
-                            color_continuous_scale="Reds",
-                            mapbox_style="carto-positron",
-                            center={"lat": 55.8642, "lon": -4.2518},
-                            zoom=9,
-                            opacity=0.7,
-                            labels={'Total Revenue': 'Total Revenue (£)'}
-                        )
+                        if PLOTLY_AVAILABLE:
+                            fig = px.choropleth_mapbox(
+                                pickup_revenue,
+                                geojson=geojson_url,
+                                locations='Pickup Area',
+                                featureidkey="properties.name",
+                                color='Total Revenue',
+                                color_continuous_scale="Reds",
+                                mapbox_style="carto-positron",
+                                center={"lat": 55.8642, "lon": -4.2518},
+                                zoom=9,
+                                opacity=0.7,
+                                labels={'Total Revenue': 'Total Revenue (£)'}
+                            )
 
-                        fig.update_layout(
-                            margin={"r":0,"t":0,"l":0,"b":0},
-                            height=600
-                        )
-                        
-                        st.plotly_chart(fig, use_container_width=True)
+                            fig.update_layout(
+                                margin={"r":0,"t":0,"l":0,"b":0},
+                                height=600
+                            )
+                            
+                            st.plotly_chart(fig, use_container_width=True)
+                        else:
+                            # Simple table fallback
+                            st.write("**Revenue by Pickup Area:**")
+                            st.dataframe(pickup_revenue.sort_values('Total Revenue', ascending=False))
+                            st.info("Interactive map not available. Displaying revenue data in table format.")
 
                     except Exception as e:
                         st.error(f"An error occurred while creating the map: {e}")
