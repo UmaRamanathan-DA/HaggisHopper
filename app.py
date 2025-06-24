@@ -749,6 +749,21 @@ if df is not None:
                 st.error("No data available for postcode demand analysis.")
 
         display_analysis_section("Postcode Demand Analysis", 6, analyzer, df, custom_content=postcode_demand_content)
+
+        # Route Heatmap: Identifying frequented routes through origin and destination post code areas
+        if df is not None:
+            st.markdown("---")
+            st.markdown("### Identifying frequented routes through origin and destination post code areas")
+            st.markdown("This heatmap visualizes the frequency of trips between each pair of pickup and dropoff postcode areas, helping to identify the most popular routes.")
+            import matplotlib.pyplot as plt
+            import seaborn as sns
+            trip_matrix = df.pivot_table(index='Pickup Area', columns='Dropoff Area', values='Timestamp', aggfunc='count', fill_value=0)
+            fig, ax = plt.subplots(figsize=(18, 6))
+            sns.heatmap(trip_matrix, cmap='magma', ax=ax, cbar=True)
+            ax.set_title('Heatmap of Trip Counts between Post Code Areas', fontsize=18, fontweight='bold')
+            ax.set_xlabel('Dropoff Postcode', fontsize=14)
+            ax.set_ylabel('Pickup Postcode', fontsize=14)
+            st.pyplot(fig)
         
         # Outlier Analysis
         # st.markdown("<div id='outlier'></div>", unsafe_allow_html=True)
@@ -1744,6 +1759,21 @@ if df is not None:
         ax.set_xlabel('Dropoff Postcode', fontsize=14)
         ax.set_ylabel('Pickup Postcode', fontsize=14)
         st.pyplot(fig)
+
+        # Rush Hour Analysis: Identifying busy post code areas for pick up
+        if df is not None:
+            st.markdown("---")
+            st.markdown("### Rush Hour Analysis: Identifying busy post code areas for pick up")
+            st.markdown("This heatmap shows the frequency of pickups by postcode area and hour of the day, helping to identify rush hour hotspots.")
+            import matplotlib.pyplot as plt
+            import seaborn as sns
+            rush_matrix = df.pivot_table(index='Pickup Area', columns=df['Timestamp'].dt.hour, values='Timestamp', aggfunc='count', fill_value=0)
+            fig, ax = plt.subplots(figsize=(18, 6))
+            sns.heatmap(rush_matrix, cmap='viridis', ax=ax, cbar=True)
+            ax.set_title('Heatmap of Trip Counts between Pickup Post Code and Hour of Day', fontsize=18, fontweight='bold')
+            ax.set_xlabel('Hour of Day', fontsize=14)
+            ax.set_ylabel('Pickup Postcode', fontsize=14)
+            st.pyplot(fig)
 
 else:
     st.info("Upload a CSV file or use the sample data to begin analysis.") 
