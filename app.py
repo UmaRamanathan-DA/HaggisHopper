@@ -471,7 +471,7 @@ if df is not None:
             else:
                 st.error("No data available")
         
-        display_analysis_section("1. Data Overview", 1, analyzer, df, custom_content=data_overview_content)
+        display_analysis_section("Data Overview", 1, analyzer, df, custom_content=data_overview_content)
         
         # Descriptive Statistics
         st.markdown("<div id='descriptive_stats'></div>", unsafe_allow_html=True)
@@ -527,7 +527,7 @@ if df is not None:
             else:
                 st.error("No data available")
 
-        display_analysis_section("2. Descriptive Statistics", 2, analyzer, df, custom_content=descriptive_stats_content)
+        display_analysis_section("Descriptive Statistics", 2, analyzer, df, custom_content=descriptive_stats_content)
         
         # Data Quality Assessment
         st.markdown("<div id='data_quality'></div>", unsafe_allow_html=True)
@@ -640,7 +640,7 @@ if df is not None:
             else:
                 st.error("No data available for data quality analysis.")
 
-        display_analysis_section("3. Data Quality Assessment", 3, analyzer, df, custom_content=data_quality_content)
+        display_analysis_section("Data Quality Assessment", 3, analyzer, df, custom_content=data_quality_content)
         
         # Data Cleaning
         st.markdown("<div id='data_cleaning'></div>", unsafe_allow_html=True)
@@ -670,7 +670,7 @@ if df is not None:
             else:
                 st.error("No data available to clean.")
 
-        display_analysis_section("4. Data Cleaning", 4, analyzer, df, custom_content=data_cleaning_content)
+        display_analysis_section("Data Cleaning", 4, analyzer, df, custom_content=data_cleaning_content)
         
         # Feature Engineering
         st.markdown("<div id='feature_engineering'></div>", unsafe_allow_html=True)
@@ -703,7 +703,7 @@ if df is not None:
             else:
                 st.error("No data available for feature engineering.")
 
-        display_analysis_section("5. Feature Engineering", 5, analyzer, df, custom_content=feature_engineering_content)
+        display_analysis_section("Feature Engineering", 5, analyzer, df, custom_content=feature_engineering_content)
         
         # Add to navigation pane
         sections = [
@@ -789,9 +789,10 @@ if df is not None:
             else:
                 st.error("No data available for postcode demand analysis.")
 
-        display_analysis_section("7. Postcode Demand Analysis", 7, analyzer, df, custom_content=postcode_demand_content)
+        display_analysis_section("Postcode Demand Analysis", 7, analyzer, df, custom_content=postcode_demand_content)
 
         # Demand Analysis Section (collapsible)
+        st.markdown("<div id='demand_analysis'></div>", unsafe_allow_html=True)
         if df is not None:
             with st.expander('8. Demand Analysis', expanded=False):
                 st.markdown('---')
@@ -846,7 +847,7 @@ if df is not None:
             else:
                 st.error("No data available")
         
-        display_analysis_section("10. Correlation Analysis", 10, analyzer, df, custom_content=correlation_content)
+        display_analysis_section("Correlation Analysis", 10, analyzer, df, custom_content=correlation_content)
         
         # Temporal Analysis
         st.markdown("<div id='temporal'></div>", unsafe_allow_html=True)
@@ -923,7 +924,7 @@ if df is not None:
             else:
                 st.error("No data available")
         
-        display_analysis_section("11. Temporal Analysis", 11, analyzer, df, custom_content=temporal_content)
+        display_analysis_section("Temporal Analysis", 11, analyzer, df, custom_content=temporal_content)
         
         # Hourly Variations and Outliers in Key Taxi Metrics: Demand, Distance, Duration, Fare, Tip, and Total Amount
         st.markdown("<div id='hourly_variations'></div>", unsafe_allow_html=True)
@@ -986,7 +987,7 @@ if df is not None:
             else:
                 st.error("No data available")
         
-        display_analysis_section("13. Revenue Analysis", 13, analyzer, df, custom_content=revenue_content)
+        display_analysis_section("Revenue Analysis", 13, analyzer, df, custom_content=revenue_content)
         
         # Clustering Analysis
         st.markdown("<div id='clustering'></div>", unsafe_allow_html=True)
@@ -1258,7 +1259,7 @@ if df is not None:
             else:
                 st.error("No data available for pricing analysis.")
         
-        display_analysis_section("14. Clustering Analysis", 14, analyzer, df, custom_content=clustering_content)
+        display_analysis_section("Clustering Analysis", 14, analyzer, df, custom_content=clustering_content)
         
         # Hour-Ahead Demand Forecasting
         st.markdown("<div id='demand_forecast'></div>", unsafe_allow_html=True)
@@ -1777,7 +1778,7 @@ if df is not None:
             else:
                 st.error("No data available to generate a forecast.")
         
-        display_analysis_section("15. Hour-Ahead Demand Forecasting", 15, analyzer, df, custom_content=demand_forecasting_content)
+        display_analysis_section("Hour-Ahead Demand Forecasting", 15, analyzer, df, custom_content=demand_forecasting_content)
         
         # Business Insights
         st.markdown("<div id='business'></div>", unsafe_allow_html=True)
@@ -1785,7 +1786,7 @@ if df is not None:
             output = run_analysis_with_streamlit_output(analyzer, "business")
             st.text(output)
         
-        display_analysis_section("16. Business Insights", 16, analyzer, df, custom_content=business_content)
+        display_analysis_section("Business Insights", 16, analyzer, df, custom_content=business_content)
         
         # Geospatial Revenue Map
         st.markdown("<div id='geospatial_map'></div>", unsafe_allow_html=True)
@@ -1834,7 +1835,7 @@ if df is not None:
             else:
                 st.error("No data available to generate the map.")
 
-        display_analysis_section("17. Geospatial Revenue Map", 17, analyzer, df, custom_content=geospatial_revenue_content)
+        display_analysis_section("Geospatial Revenue Map", 17, analyzer, df, custom_content=geospatial_revenue_content)
 
         if len(st.session_state.analysis_results) == total_sections:
             st.success("🎉 All analysis complete! Explore each section above.")
