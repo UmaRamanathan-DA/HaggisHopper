@@ -128,6 +128,7 @@ def run_analysis_with_streamlit_output(analyzer, analysis_type):
     f = io.StringIO()
     with redirect_stdout(f):
         if analysis_type == "outlier":
+            print("Starting Outlier analysis .....")
             analyzer.outlier_analysis()
         elif analysis_type == "correlation":
             analyzer.correlation_analysis()
@@ -735,12 +736,11 @@ if df is not None:
         display_analysis_section("Postcode Demand Analysis", 6, analyzer, df, custom_content=postcode_demand_content)
         
         # Outlier Analysis
-        st.markdown("<div id='outlier'></div>", unsafe_allow_html=True)
-        def outlier_content(placeholder):
-            output = run_analysis_with_streamlit_output(analyzer, "outlier")
-            st.text(output)
-        
-        display_analysis_section("Outlier Analysis", 7, analyzer, df, custom_content=outlier_content)
+        # st.markdown("<div id='outlier'></div>", unsafe_allow_html=True)
+        # def outlier_content(placeholder):
+        #     output = run_analysis_with_streamlit_output(analyzer, "outlier")
+        #     st.text(output)
+        # display_analysis_section("Outlier Analysis", 7, analyzer, df, custom_content=outlier_content)
         
         # Correlation Analysis
         st.markdown("<div id='correlation'></div>", unsafe_allow_html=True)
