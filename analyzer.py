@@ -47,6 +47,16 @@ class HaggisHopperAnalyzer:
         else:
             raise ValueError("Either data_path or df must be provided")
         
+        # Convert 'Tip (%)' column to numeric (float), stripping % if present
+        if 'Tip (%)' in self.df.columns:
+            self.df['Tip (%)'] = (
+                self.df['Tip (%)']
+                .astype(str)
+                .str.replace('%', '', regex=False)
+                .replace('', np.nan)
+            )
+            self.df['Tip (%)'] = pd.to_numeric(self.df['Tip (%)'], errors='coerce')
+        
         self.df_processed = None
         self.scaler = StandardScaler()
     
@@ -113,8 +123,11 @@ class HaggisHopperAnalyzer:
         print("\nZ-Score Method Outliers (|z| > 3):")
         total_outliers_z = 0
         for col in numeric_cols:
-            z_scores = np.abs(stats.zscore(self.df[col].dropna()))
-            outliers = self.df[z_scores > 3]
+            col_data = self.df[col].dropna()
+            if col_data.empty:
+                continue
+            z_scores = np.abs(stats.zscore(col_data))
+            outliers = self.df.loc[col_data.index][z_scores > 3]
             outlier_count = len(outliers)
             total_outliers_z += outlier_count
             print(f"{col}: {outlier_count} outliers ({outlier_count/len(self.df)*100:.2f}%)")
@@ -1008,7 +1021,7 @@ class HaggisHopperAnalyzer:
             outliers_count = len(self.df[(self.df[col] < lower_bound) | (self.df[col] > upper_bound)])
             outlier_percentage = (outliers_count / len(self.df)) * 100
             
-            print(f"  �� Outlier Thresholds: {lower_bound:.2f} to {upper_bound:.2f}")
+            print(f"  🚨 Outlier Thresholds: {lower_bound:.2f} to {upper_bound:.2f}")
             print(f"  🚨 Outliers: {outliers_count} ({outlier_percentage:.1f}%)")
         
         # Categorical variables analysis

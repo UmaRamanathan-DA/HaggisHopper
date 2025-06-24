@@ -1,4 +1,5 @@
 import streamlit as st
+st.set_page_config(page_title="Haggis Hopper Taxi Demand Analysis", layout="wide")
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -87,7 +88,6 @@ except ImportError as e:
     ANALYZER_AVAILABLE = False
     HaggisHopperAnalyzer = None
 
-st.set_page_config(page_title="Haggis Hopper Taxi Demand Analysis", layout="wide")
 st.title("🚕 Haggis Hopper Taxi Demand Analysis Dashboard")
 st.markdown("""
 This interactive dashboard lets you explore taxi demand, revenue, and business insights for Haggis Hopper.
