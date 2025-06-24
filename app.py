@@ -940,7 +940,7 @@ if df is not None:
         display_analysis_section("Temporal Analysis", 11, analyzer, df, custom_content=temporal_content)
         
         # Hourly Variations and Outliers in Key Taxi Metrics: Demand, Distance, Duration, Fare, Tip, and Total Amount
-        st.markdown("<div id='hourly_variations'></div>", unsafe_allow_html=True)
+       """  st.markdown("<div id='hourly_variations'></div>", unsafe_allow_html=True)
         if df is not None:
             with st.expander('12. Hourly Variations and Outliers in Key Taxi Metrics: Demand, Distance, Duration, Fare, Tip, and Total Amount', expanded=False):
                 import matplotlib.pyplot as plt
@@ -973,7 +973,7 @@ if df is not None:
                     axes[row, col].set_xlabel('Hour of the day')
                     axes[row, col].set_ylabel(metric)
                 plt.tight_layout()
-                st.pyplot(fig)
+                st.pyplot(fig) """
 
         # Revenue Analysis
         st.markdown("<div id='revenue'></div>", unsafe_allow_html=True)
