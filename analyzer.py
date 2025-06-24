@@ -78,19 +78,19 @@ class HaggisHopperAnalyzer:
         return self.df
     
     def data_quality_assessment(self):
-        """Data quality analysis"""
+        """Data quality analysis (report missing values, no imputation)"""
         print("\n" + "="*40)
         print("DATA QUALITY ASSESSMENT")
         print("="*40)
         
-        # Missing values
+        # Missing values (including NaNs)
         missing_data = self.df.isnull().sum()
         missing_percent = (missing_data / len(self.df)) * 100
         missing_df = pd.DataFrame({
             'Missing Count': missing_data,
             'Missing Percentage': missing_percent
         })
-        print("\nMissing Values:")
+        print("\nMissing Values (including NaNs):")
         print(missing_df[missing_df['Missing Count'] > 0])
         
         # Duplicates
@@ -100,7 +100,7 @@ class HaggisHopperAnalyzer:
         return missing_df
     
     def outlier_analysis(self):
-        """Comprehensive outlier analysis with interpretations"""
+        """Comprehensive outlier analysis (no imputation, analyze as-is)"""
         print("\n" + "="*40)
         print("OUTLIER ANALYSIS")
         print("="*40)
@@ -111,10 +111,14 @@ class HaggisHopperAnalyzer:
         print("\nIQR Method Outliers:")
         total_outliers_iqr = 0
         for col in numeric_cols:
-            Q1 = self.df[col].quantile(0.25)
-            Q3 = self.df[col].quantile(0.75)
+            col_data = self.df[col].dropna()
+            if col_data.empty:
+                print(f"[SKIP] {col}: All values are NaN or missing.")
+                continue
+            Q1 = col_data.quantile(0.25)
+            Q3 = col_data.quantile(0.75)
             IQR = Q3 - Q1
-            outliers = self.df[(self.df[col] < Q1 - 1.5*IQR) | (self.df[col] > Q3 + 1.5*IQR)]
+            outliers = col_data[(col_data < Q1 - 1.5*IQR) | (col_data > Q3 + 1.5*IQR)]
             outlier_count = len(outliers)
             total_outliers_iqr += outlier_count
             print(f"{col}: {outlier_count} outliers ({outlier_count/len(self.df)*100:.2f}%)")
@@ -123,8 +127,9 @@ class HaggisHopperAnalyzer:
         print("\nZ-Score Method Outliers (|z| > 3):")
         total_outliers_z = 0
         for col in numeric_cols:
-            col_data = self.df[col].dropna()
+            col_data = pd.to_numeric(self.df[col], errors='coerce').dropna()
             if col_data.empty:
+                print(f"[SKIP] {col}: All values are NaN or missing.")
                 continue
             z_scores = np.abs(stats.zscore(col_data))
             outliers = self.df.loc[col_data.index][z_scores > 3]
@@ -154,10 +159,13 @@ class HaggisHopperAnalyzer:
         
         # Analyze each variable
         for col in numeric_cols:
-            Q1 = self.df[col].quantile(0.25)
-            Q3 = self.df[col].quantile(0.75)
+            col_data = self.df[col].dropna()
+            if col_data.empty:
+                continue
+            Q1 = col_data.quantile(0.25)
+            Q3 = col_data.quantile(0.75)
             IQR = Q3 - Q1
-            outliers = self.df[(self.df[col] < Q1 - 1.5*IQR) | (self.df[col] > Q3 + 1.5*IQR)]
+            outliers = col_data[(col_data < Q1 - 1.5*IQR) | (col_data > Q3 + 1.5*IQR)]
             outlier_count = len(outliers)
             
             if outlier_count > 0:
@@ -187,6 +195,15 @@ class HaggisHopperAnalyzer:
         print(f"• For analysis: Consider outlier treatment based on business context")
         print(f"• For modeling: Outliers may need special handling in predictive models")
         print(f"• For business: Investigate extreme values for operational insights")
+    
+    def impute_missing_values(self):
+        """Impute missing values in numeric columns with median (to be called after outlier analysis)"""
+        numeric_cols = self.df.select_dtypes(include=[np.number]).columns
+        for col in numeric_cols:
+            if self.df[col].isnull().any():
+                median_val = self.df[col].median()
+                self.df[col].fillna(median_val, inplace=True)
+                print(f"[IMPUTE] {col}: Filled missing values with median ({median_val}) after outlier analysis")
     
     def correlation_analysis(self):
         """Correlation analysis with interpretations"""
@@ -1135,6 +1152,7 @@ class HaggisHopperAnalyzer:
         self.load_and_explore_data()
         self.data_quality_assessment()
         self.outlier_analysis()
+        self.impute_missing_values()
         self.correlation_analysis()
         self.temporal_analysis()
         self.revenue_analysis()
