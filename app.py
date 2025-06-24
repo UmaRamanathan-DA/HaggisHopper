@@ -702,6 +702,26 @@ if df is not None:
 
         display_analysis_section("Feature Engineering", 5, analyzer, df, custom_content=feature_engineering_content)
         
+        # After Feature Engineering section
+        with st.expander('Processed and Cleansed Dataset', expanded=False):
+            st.markdown('This is the final processed and cleansed dataset used for EDA, including all engineered features such as hour of the day.')
+            # Show dataframe
+            st.dataframe(df, use_container_width=True)
+            # Show datatypes
+            st.markdown('**Column Data Types:**')
+            dtype_df = pd.DataFrame({'Column': df.columns, 'Data Type': df.dtypes.astype(str).values})
+            st.dataframe(dtype_df, use_container_width=True, hide_index=True)
+            # Show total rows and columns
+            st.markdown(f"**Total Rows:** {df.shape[0]}")
+            st.markdown(f"**Total Columns:** {df.shape[1]}")
+            # Show comparison with original dataset
+            if 'original_df' in st.session_state:
+                orig_cols = st.session_state.original_df.shape[1]
+                proc_cols = df.shape[1]
+                st.markdown(f"**Original Column Count:** {orig_cols}")
+                st.markdown(f"**Processed Column Count:** {proc_cols}")
+                st.markdown(f"**New Columns Added:** {proc_cols - orig_cols}")
+        
         # Postcode Demand Analysis
         st.markdown("<div id='postcode_demand'></div>", unsafe_allow_html=True)
         def postcode_demand_content(placeholder):
@@ -1767,7 +1787,10 @@ if df is not None:
             st.markdown("This heatmap shows the frequency of pickups by postcode area and hour of the day, helping to identify rush hour hotspots.")
             import matplotlib.pyplot as plt
             import seaborn as sns
-            rush_matrix = df.pivot_table(index='Pickup Area', columns=df['Timestamp'].dt.hour, values='Timestamp', aggfunc='count', fill_value=0)
+            # Ensure 'hour' column exists
+            if 'hour' not in df.columns:
+                df['hour'] = pd.to_datetime(df['Timestamp']).dt.hour
+            rush_matrix = df.pivot_table(index='Pickup Area', columns='hour', values='Timestamp', aggfunc='count', fill_value=0)
             fig, ax = plt.subplots(figsize=(18, 6))
             sns.heatmap(rush_matrix, cmap='viridis', ax=ax, cbar=True)
             ax.set_title('Heatmap of Trip Counts between Pickup Post Code and Hour of Day', fontsize=18, fontweight='bold')
