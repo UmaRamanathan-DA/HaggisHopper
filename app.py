@@ -940,40 +940,27 @@ if df is not None:
         display_analysis_section("Temporal Analysis", 11, analyzer, df, custom_content=temporal_content)
         
         # Hourly Variations and Outliers in Key Taxi Metrics: Demand, Distance, Duration, Fare, Tip, and Total Amount
-        st.markdown("<div id='hourly_variations'></div>", unsafe_allow_html=True)
+        # Hourly Demand Distribution (Boxplot) for Outlier Detection
+        st.markdown("<div id='hourly_demand_boxplot'></div>", unsafe_allow_html=True)
         if df is not None:
-            with st.expander('12. Hourly Variations and Outliers in Key Taxi Metrics: Demand, Distance, Duration, Fare, Tip, and Total Amount', expanded=False):
+            with st.expander('Hourly Demand Distribution (Boxplot)', expanded=False):
                 import matplotlib.pyplot as plt
                 import seaborn as sns
-                metrics = [
-                    #('Demand', df.groupby('hour').size(), 'Demand'),
-                    ('Distance (km)', df, 'Distance (km)'),
-                    ('Duration (minutes)', df, 'Duration (minutes)'),
-                    ('Fare Amount (£)', df, 'Fare Amount (£)'),
-                    ('Tip Amount (£)', df, 'Tip Amount (£)'),
-                    ('Total Amount (£)', df, 'Total Amount (£)')
-                ]
-                fig, axes = plt.subplots(2, 3, figsize=(24, 7))
-                # Demand boxplot
-                sns.boxplot(x=df['hour'], y=df.groupby('hour').size().reindex(range(24), fill_value=0).values, ax=axes[0,0], palette='Spectral')
-                axes[0,0].set_title('Demand by Hour of the day')
-                axes[0,0].set_xlabel('Hour of the day')
-                axes[0,0].set_ylabel('Demand')
-                # Other metrics
-                metric_list = [
-                    ('Distance (km)', 0, 1),
-                    ('Duration (minutes)', 0, 2),
-                    ('Fare Amount (£)', 1, 0),
-                    ('Tip Amount (£)', 1, 1),
-                    ('Total Amount (£)', 1, 2)
-                ]
-                for metric, row, col in metric_list:
-                    sns.boxplot(x='hour', y=metric, data=df, ax=axes[row, col], palette='Spectral')
-                    axes[row, col].set_title(f'{metric} by Hour of the day')
-                    axes[row, col].set_xlabel('Hour of the day')
-                    axes[row, col].set_ylabel(metric)
+                # Ensure Timestamp is datetime and extract date and hour
+                df['Timestamp'] = pd.to_datetime(df['Timestamp'])
+                df['date'] = df['Timestamp'].dt.date
+                df['hour'] = df['Timestamp'].dt.hour
+                # Aggregate: count trips per hour per day
+                hourly_demand = df.groupby(['date', 'hour']).size().reset_index(name='trip_count')
+                # Plot: boxplot of trip counts per hour across days
+                plt.figure(figsize=(14, 6))
+                sns.boxplot(x='hour', y='trip_count', data=hourly_demand, palette='Spectral')
+                plt.title('Distribution of Trip Counts by Hour Across Days')
+                plt.xlabel('Hour of the Day')
+                plt.ylabel('Number of Trips')
                 plt.tight_layout()
-                st.pyplot(fig)
+                st.pyplot(plt.gcf())
+                plt.close()
 
         # Revenue Analysis
         st.markdown("<div id='revenue'></div>", unsafe_allow_html=True)
@@ -1852,5 +1839,7 @@ if df is not None:
 
         if len(st.session_state.analysis_results) == total_sections:
             st.success("🎉 All analysis complete! Explore each section above.")      
+
+       
 else:
     st.info("Upload a CSV file or use the sample data to begin analysis.") 
