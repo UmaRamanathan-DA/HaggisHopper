@@ -365,21 +365,22 @@ if df is not None:
     st.sidebar.header("Report Navigation")
     
     sections = [
-        ("Data Overview", None, "data_overview"),
-        ("Descriptive Statistics", None, "descriptive_stats"),
-        ("Data Quality Assessment", None, "data_quality"),
-        ("Data Cleaning", None, "data_cleaning"),
-        ("Feature Engineering", None, "feature_engineering"),
+        ("1. Data Overview", None, "data_overview"),
+        ("2. Descriptive Statistics", None, "descriptive_stats"),
+        ("3. Data Quality Assessment", None, "data_quality"),
+        ("4. Data Cleaning", None, "data_cleaning"),
+        ("5. Feature Engineering", None, "feature_engineering"),
         ("6. Processed and Cleansed Dataset", None, "processed_cleansed"),
-        ("Postcode Demand Analysis", None, "postcode_demand"),
-        ("Outlier Analysis", "outlier", "outlier"),
-        ("Correlation Analysis", "correlation", "correlation"),
-        ("Temporal Analysis", "temporal", "temporal"),
-        ("Revenue Analysis", "revenue", "revenue"),
-        ("Clustering Analysis", "clustering", "clustering"),
-        ("Hour-Ahead Demand Forecasting", None, "demand_forecast"),
-        ("Business Insights", "business", "business"),
-        ("Geospatial Revenue Map", None, "geospatial_map")
+        ("7. Postcode Demand Analysis", None, "postcode_demand"),
+        ("8. Demand Analysis", None, "demand_analysis"),
+        ("9. Outlier Analysis", "outlier", "outlier"),
+        ("10. Correlation Analysis", "correlation", "correlation"),
+        ("11. Temporal Analysis", "temporal", "temporal"),
+        ("12. Revenue Analysis", "revenue", "revenue"),
+        ("13. Clustering Analysis", "clustering", "clustering"),
+        ("14. Hour-Ahead Demand Forecasting", None, "demand_forecast"),
+        ("15. Business Insights", "business", "business"),
+        ("16. Geospatial Revenue Map", None, "geospatial_map")
     ]
     
     if st.session_state.analysis_complete:
@@ -469,7 +470,7 @@ if df is not None:
             else:
                 st.error("No data available")
         
-        display_analysis_section("Data Overview", 1, analyzer, df, custom_content=data_overview_content)
+        display_analysis_section("1. Data Overview", 1, analyzer, df, custom_content=data_overview_content)
         
         # Descriptive Statistics
         st.markdown("<div id='descriptive_stats'></div>", unsafe_allow_html=True)
@@ -525,7 +526,7 @@ if df is not None:
             else:
                 st.error("No data available")
 
-        display_analysis_section("Descriptive Statistics", 2, analyzer, df, custom_content=descriptive_stats_content)
+        display_analysis_section("2. Descriptive Statistics", 2, analyzer, df, custom_content=descriptive_stats_content)
         
         # Data Quality Assessment
         st.markdown("<div id='data_quality'></div>", unsafe_allow_html=True)
@@ -638,7 +639,7 @@ if df is not None:
             else:
                 st.error("No data available for data quality analysis.")
 
-        display_analysis_section("Data Quality Assessment", 3, analyzer, df, custom_content=data_quality_content)
+        display_analysis_section("3. Data Quality Assessment", 3, analyzer, df, custom_content=data_quality_content)
         
         # Data Cleaning
         st.markdown("<div id='data_cleaning'></div>", unsafe_allow_html=True)
@@ -668,7 +669,7 @@ if df is not None:
             else:
                 st.error("No data available to clean.")
 
-        display_analysis_section("Data Cleaning", 4, analyzer, df, custom_content=data_cleaning_content)
+        display_analysis_section("4. Data Cleaning", 4, analyzer, df, custom_content=data_cleaning_content)
         
         # Feature Engineering
         st.markdown("<div id='feature_engineering'></div>", unsafe_allow_html=True)
@@ -701,25 +702,26 @@ if df is not None:
             else:
                 st.error("No data available for feature engineering.")
 
-        display_analysis_section("Feature Engineering", 5, analyzer, df, custom_content=feature_engineering_content)
+        display_analysis_section("5. Feature Engineering", 5, analyzer, df, custom_content=feature_engineering_content)
         
         # Add to navigation pane
         sections = [
-            ("Data Overview", None, "data_overview"),
-            ("Descriptive Statistics", None, "descriptive_stats"),
-            ("Data Quality Assessment", None, "data_quality"),
-            ("Data Cleaning", None, "data_cleaning"),
-            ("Feature Engineering", None, "feature_engineering"),
+            ("1. Data Overview", None, "data_overview"),
+            ("2. Descriptive Statistics", None, "descriptive_stats"),
+            ("3. Data Quality Assessment", None, "data_quality"),
+            ("4. Data Cleaning", None, "data_cleaning"),
+            ("5. Feature Engineering", None, "feature_engineering"),
             ("6. Processed and Cleansed Dataset", None, "processed_cleansed"),
-            ("Postcode Demand Analysis", None, "postcode_demand"),
-            ("Outlier Analysis", "outlier", "outlier"),
-            ("Correlation Analysis", "correlation", "correlation"),
-            ("Temporal Analysis", "temporal", "temporal"),
-            ("Revenue Analysis", "revenue", "revenue"),
-            ("Clustering Analysis", "clustering", "clustering"),
-            ("Hour-Ahead Demand Forecasting", None, "demand_forecast"),
-            ("Business Insights", "business", "business"),
-            ("Geospatial Revenue Map", None, "geospatial_map")
+            ("7. Postcode Demand Analysis", None, "postcode_demand"),
+            ("8. Demand Analysis", None, "demand_analysis"),
+            ("9. Outlier Analysis", "outlier", "outlier"),
+            ("10. Correlation Analysis", "correlation", "correlation"),
+            ("11. Temporal Analysis", "temporal", "temporal"),
+            ("12. Revenue Analysis", "revenue", "revenue"),
+            ("13. Clustering Analysis", "clustering", "clustering"),
+            ("14. Hour-Ahead Demand Forecasting", None, "demand_forecast"),
+            ("15. Business Insights", "business", "business"),
+            ("16. Geospatial Revenue Map", None, "geospatial_map")
         ]
 
         # Numbered and linked section for processed and cleansed dataset
@@ -785,23 +787,38 @@ if df is not None:
             else:
                 st.error("No data available for postcode demand analysis.")
 
-        display_analysis_section("Postcode Demand Analysis", 6, analyzer, df, custom_content=postcode_demand_content)
+        display_analysis_section("7. Postcode Demand Analysis", 7, analyzer, df, custom_content=postcode_demand_content)
 
-        # Route Heatmap: Identifying frequented routes through origin and destination post code areas
+        # Demand Analysis Section (collapsible)
         if df is not None:
-            st.markdown("---")
-            st.markdown("### Identifying frequented routes through origin and destination post code areas")
-            st.markdown("This heatmap visualizes the frequency of trips between each pair of pickup and dropoff postcode areas, helping to identify the most popular routes.")
-            import matplotlib.pyplot as plt
-            import seaborn as sns
-            trip_matrix = df.pivot_table(index='Pickup Area', columns='Dropoff Area', values='Timestamp', aggfunc='count', fill_value=0)
-            fig, ax = plt.subplots(figsize=(18, 6))
-            sns.heatmap(trip_matrix, cmap='magma', ax=ax, cbar=True)
-            ax.set_title('Heatmap of Trip Counts between Post Code Areas', fontsize=18, fontweight='bold')
-            ax.set_xlabel('Dropoff Postcode', fontsize=14)
-            ax.set_ylabel('Pickup Postcode', fontsize=14)
-            st.pyplot(fig)
-        
+            with st.expander('8. Demand Analysis', expanded=False):
+                st.markdown('---')
+                st.markdown('#### 8.1 Identifying frequented routes through origin and destination post code areas')
+                st.markdown('This heatmap visualizes the frequency of trips between each pair of pickup and dropoff postcode areas, helping to identify the most popular routes.')
+                import matplotlib.pyplot as plt
+                import seaborn as sns
+                trip_matrix = df.pivot_table(index='Pickup Area', columns='Dropoff Area', values='Timestamp', aggfunc='count', fill_value=0)
+                fig, ax = plt.subplots(figsize=(18, 6))
+                sns.heatmap(trip_matrix, cmap='magma', ax=ax, cbar=True)
+                ax.set_title('Heatmap of Trip Counts between Post Code Areas', fontsize=18, fontweight='bold')
+                ax.set_xlabel('Dropoff Postcode', fontsize=14)
+                ax.set_ylabel('Pickup Postcode', fontsize=14)
+                st.pyplot(fig)
+
+                st.markdown('---')
+                st.markdown('#### 8.2 Rush Hour Analysis: Identifying busy post code areas for pick up')
+                st.markdown('This heatmap shows the frequency of pickups by postcode area and hour of the day, helping to identify rush hour hotspots.')
+                # Ensure 'hour' column exists
+                if 'hour' not in df.columns:
+                    df['hour'] = pd.to_datetime(df['Timestamp']).dt.hour
+                rush_matrix = df.pivot_table(index='Pickup Area', columns='hour', values='Timestamp', aggfunc='count', fill_value=0)
+                fig2, ax2 = plt.subplots(figsize=(18, 6))
+                sns.heatmap(rush_matrix, cmap='viridis', ax=ax2, cbar=True)
+                ax2.set_title('Heatmap of Trip Counts between Pickup Post Code and Hour of Day', fontsize=18, fontweight='bold')
+                ax2.set_xlabel('Hour of Day', fontsize=14)
+                ax2.set_ylabel('Pickup Postcode', fontsize=14)
+                st.pyplot(fig2)
+
         # Outlier Analysis
         # st.markdown("<div id='outlier'></div>", unsafe_allow_html=True)
         # def outlier_content(placeholder):
@@ -827,7 +844,7 @@ if df is not None:
             else:
                 st.error("No data available")
         
-        display_analysis_section("Correlation Analysis", 8, analyzer, df, custom_content=correlation_content)
+        display_analysis_section("10. Correlation Analysis", 10, analyzer, df, custom_content=correlation_content)
         
         # Temporal Analysis
         st.markdown("<div id='temporal'></div>", unsafe_allow_html=True)
@@ -904,7 +921,7 @@ if df is not None:
             else:
                 st.error("No data available")
         
-        display_analysis_section("Temporal Analysis", 9, analyzer, df, custom_content=temporal_content)
+        display_analysis_section("11. Temporal Analysis", 11, analyzer, df, custom_content=temporal_content)
         
         # Revenue Analysis
         st.markdown("<div id='revenue'></div>", unsafe_allow_html=True)
@@ -931,7 +948,7 @@ if df is not None:
             else:
                 st.error("No data available")
         
-        display_analysis_section("Revenue Analysis", 10, analyzer, df, custom_content=revenue_content)
+        display_analysis_section("12. Revenue Analysis", 12, analyzer, df, custom_content=revenue_content)
         
         # Clustering Analysis
         st.markdown("<div id='clustering'></div>", unsafe_allow_html=True)
@@ -1203,7 +1220,7 @@ if df is not None:
             else:
                 st.error("No data available for pricing analysis.")
         
-        display_analysis_section("Pricing Efficiency Analysis", 11, analyzer, df, custom_content=clustering_content)
+        display_analysis_section("13. Clustering Analysis", 13, analyzer, df, custom_content=clustering_content)
         
         # Hour-Ahead Demand Forecasting
         st.markdown("<div id='demand_forecast'></div>", unsafe_allow_html=True)
@@ -1722,7 +1739,7 @@ if df is not None:
             else:
                 st.error("No data available to generate a forecast.")
         
-        display_analysis_section("Hour-Ahead Demand Forecasting", 12, analyzer, df, custom_content=demand_forecasting_content)
+        display_analysis_section("14. Hour-Ahead Demand Forecasting", 14, analyzer, df, custom_content=demand_forecasting_content)
         
         # Business Insights
         st.markdown("<div id='business'></div>", unsafe_allow_html=True)
@@ -1730,7 +1747,7 @@ if df is not None:
             output = run_analysis_with_streamlit_output(analyzer, "business")
             st.text(output)
         
-        display_analysis_section("Business Insights", 13, analyzer, df, custom_content=business_content)
+        display_analysis_section("15. Business Insights", 15, analyzer, df, custom_content=business_content)
         
         # Geospatial Revenue Map
         st.markdown("<div id='geospatial_map'></div>", unsafe_allow_html=True)
@@ -1779,7 +1796,7 @@ if df is not None:
             else:
                 st.error("No data available to generate the map.")
 
-        display_analysis_section("Geospatial Revenue Map", 14, analyzer, df, custom_content=geospatial_revenue_content)
+        display_analysis_section("16. Geospatial Revenue Map", 16, analyzer, df, custom_content=geospatial_revenue_content)
 
         if len(st.session_state.analysis_results) == total_sections:
             st.success("🎉 All analysis complete! Explore each section above.")
