@@ -376,11 +376,12 @@ if df is not None:
         ("9. Outlier Analysis", "outlier", "outlier"),
         ("10. Correlation Analysis", "correlation", "correlation"),
         ("11. Temporal Analysis", "temporal", "temporal"),
-        ("12. Revenue Analysis", "revenue", "revenue"),
-        ("13. Clustering Analysis", "clustering", "clustering"),
-        ("14. Hour-Ahead Demand Forecasting", None, "demand_forecast"),
-        ("15. Business Insights", "business", "business"),
-        ("16. Geospatial Revenue Map", None, "geospatial_map")
+        ("12. Hourly Variations and Outliers in Key Taxi Metrics: Demand, Distance, Duration, Fare, Tip, and Total Amount", None, "hourly_variations"),
+        ("13. Revenue Analysis", "revenue", "revenue"),
+        ("14. Clustering Analysis", "clustering", "clustering"),
+        ("15. Hour-Ahead Demand Forecasting", None, "demand_forecast"),
+        ("16. Business Insights", "business", "business"),
+        ("17. Geospatial Revenue Map", None, "geospatial_map")
     ]
     
     if st.session_state.analysis_complete:
@@ -717,11 +718,12 @@ if df is not None:
             ("9. Outlier Analysis", "outlier", "outlier"),
             ("10. Correlation Analysis", "correlation", "correlation"),
             ("11. Temporal Analysis", "temporal", "temporal"),
-            ("12. Revenue Analysis", "revenue", "revenue"),
-            ("13. Clustering Analysis", "clustering", "clustering"),
-            ("14. Hour-Ahead Demand Forecasting", None, "demand_forecast"),
-            ("15. Business Insights", "business", "business"),
-            ("16. Geospatial Revenue Map", None, "geospatial_map")
+            ("12. Hourly Variations and Outliers in Key Taxi Metrics: Demand, Distance, Duration, Fare, Tip, and Total Amount", None, "hourly_variations"),
+            ("13. Revenue Analysis", "revenue", "revenue"),
+            ("14. Clustering Analysis", "clustering", "clustering"),
+            ("15. Hour-Ahead Demand Forecasting", None, "demand_forecast"),
+            ("16. Business Insights", "business", "business"),
+            ("17. Geospatial Revenue Map", None, "geospatial_map")
         ]
 
         # Numbered and linked section for processed and cleansed dataset
@@ -923,6 +925,42 @@ if df is not None:
         
         display_analysis_section("11. Temporal Analysis", 11, analyzer, df, custom_content=temporal_content)
         
+        # Hourly Variations and Outliers in Key Taxi Metrics: Demand, Distance, Duration, Fare, Tip, and Total Amount
+        st.markdown("<div id='hourly_variations'></div>", unsafe_allow_html=True)
+        if df is not None:
+            with st.expander('12. Hourly Variations and Outliers in Key Taxi Metrics: Demand, Distance, Duration, Fare, Tip, and Total Amount', expanded=False):
+                import matplotlib.pyplot as plt
+                import seaborn as sns
+                metrics = [
+                    ('Demand', df.groupby('hour').size(), 'Demand'),
+                    ('Distance (km)', df, 'Distance (km)'),
+                    ('Duration (minutes)', df, 'Duration (minutes)'),
+                    ('Fare Amount (£)', df, 'Fare Amount (£)'),
+                    ('Tip Amount (£)', df, 'Tip Amount (£)'),
+                    ('Total Amount (£)', df, 'Total Amount (£)')
+                ]
+                fig, axes = plt.subplots(2, 3, figsize=(24, 7))
+                # Demand boxplot
+                sns.boxplot(x=df['hour'], y=df.groupby('hour').size().reindex(range(24), fill_value=0).values, ax=axes[0,0], palette='Spectral')
+                axes[0,0].set_title('Demand by Hour of the day')
+                axes[0,0].set_xlabel('Hour of the day')
+                axes[0,0].set_ylabel('Demand')
+                # Other metrics
+                metric_list = [
+                    ('Distance (km)', 0, 1),
+                    ('Duration (minutes)', 0, 2),
+                    ('Fare Amount (£)', 1, 0),
+                    ('Tip Amount (£)', 1, 1),
+                    ('Total Amount (£)', 1, 2)
+                ]
+                for metric, row, col in metric_list:
+                    sns.boxplot(x='hour', y=metric, data=df, ax=axes[row, col], palette='Spectral')
+                    axes[row, col].set_title(f'{metric} by Hour of the day')
+                    axes[row, col].set_xlabel('Hour of the day')
+                    axes[row, col].set_ylabel(metric)
+                plt.tight_layout()
+                st.pyplot(fig)
+
         # Revenue Analysis
         st.markdown("<div id='revenue'></div>", unsafe_allow_html=True)
         def revenue_content(placeholder):
@@ -948,7 +986,7 @@ if df is not None:
             else:
                 st.error("No data available")
         
-        display_analysis_section("12. Revenue Analysis", 12, analyzer, df, custom_content=revenue_content)
+        display_analysis_section("13. Revenue Analysis", 13, analyzer, df, custom_content=revenue_content)
         
         # Clustering Analysis
         st.markdown("<div id='clustering'></div>", unsafe_allow_html=True)
@@ -1220,7 +1258,7 @@ if df is not None:
             else:
                 st.error("No data available for pricing analysis.")
         
-        display_analysis_section("13. Clustering Analysis", 13, analyzer, df, custom_content=clustering_content)
+        display_analysis_section("14. Clustering Analysis", 14, analyzer, df, custom_content=clustering_content)
         
         # Hour-Ahead Demand Forecasting
         st.markdown("<div id='demand_forecast'></div>", unsafe_allow_html=True)
@@ -1739,7 +1777,7 @@ if df is not None:
             else:
                 st.error("No data available to generate a forecast.")
         
-        display_analysis_section("14. Hour-Ahead Demand Forecasting", 14, analyzer, df, custom_content=demand_forecasting_content)
+        display_analysis_section("15. Hour-Ahead Demand Forecasting", 15, analyzer, df, custom_content=demand_forecasting_content)
         
         # Business Insights
         st.markdown("<div id='business'></div>", unsafe_allow_html=True)
@@ -1747,7 +1785,7 @@ if df is not None:
             output = run_analysis_with_streamlit_output(analyzer, "business")
             st.text(output)
         
-        display_analysis_section("15. Business Insights", 15, analyzer, df, custom_content=business_content)
+        display_analysis_section("16. Business Insights", 16, analyzer, df, custom_content=business_content)
         
         # Geospatial Revenue Map
         st.markdown("<div id='geospatial_map'></div>", unsafe_allow_html=True)
@@ -1796,41 +1834,11 @@ if df is not None:
             else:
                 st.error("No data available to generate the map.")
 
-        display_analysis_section("16. Geospatial Revenue Map", 16, analyzer, df, custom_content=geospatial_revenue_content)
+        display_analysis_section("17. Geospatial Revenue Map", 17, analyzer, df, custom_content=geospatial_revenue_content)
 
         if len(st.session_state.analysis_results) == total_sections:
             st.success("🎉 All analysis complete! Explore each section above.")
     
-        st.markdown("---")
-        st.markdown("### Identifying frequented routes through origin and destination post code areas")
-        st.markdown("This heatmap visualizes the frequency of trips between each pair of pickup and dropoff postcode areas, helping to identify the most popular routes.")
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-        trip_matrix = df.pivot_table(index='Pickup Area', columns='Dropoff Area', values='Timestamp', aggfunc='count', fill_value=0)
-        fig, ax = plt.subplots(figsize=(18, 6))
-        sns.heatmap(trip_matrix, cmap='magma', ax=ax, cbar=True)
-        ax.set_title('Heatmap of Trip Counts between Post Code Areas', fontsize=18, fontweight='bold')
-        ax.set_xlabel('Dropoff Postcode', fontsize=14)
-        ax.set_ylabel('Pickup Postcode', fontsize=14)
-        st.pyplot(fig)
-
-        # Rush Hour Analysis: Identifying busy post code areas for pick up
-        if df is not None:
-            st.markdown("---")
-            st.markdown("### Rush Hour Analysis: Identifying busy post code areas for pick up")
-            st.markdown("This heatmap shows the frequency of pickups by postcode area and hour of the day, helping to identify rush hour hotspots.")
-            import matplotlib.pyplot as plt
-            import seaborn as sns
-            # Ensure 'hour' column exists
-            if 'hour' not in df.columns:
-                df['hour'] = pd.to_datetime(df['Timestamp']).dt.hour
-            rush_matrix = df.pivot_table(index='Pickup Area', columns='hour', values='Timestamp', aggfunc='count', fill_value=0)
-            fig, ax = plt.subplots(figsize=(18, 6))
-            sns.heatmap(rush_matrix, cmap='viridis', ax=ax, cbar=True)
-            ax.set_title('Heatmap of Trip Counts between Pickup Post Code and Hour of Day', fontsize=18, fontweight='bold')
-            ax.set_xlabel('Hour of Day', fontsize=14)
-            ax.set_ylabel('Pickup Postcode', fontsize=14)
-            st.pyplot(fig)
-
+       
 else:
     st.info("Upload a CSV file or use the sample data to begin analysis.") 
