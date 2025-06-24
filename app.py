@@ -729,7 +729,22 @@ if df is not None:
                 pickup_revenue = df.groupby('Pickup Area')['Total Amount (£)'].agg(['sum', 'mean']).round(2)
                 pickup_revenue = pickup_revenue.sort_values(by=['sum'], ascending=False).head(10)
                 st.dataframe(pickup_revenue)
-                
+
+                # High demand areas contributing to 80% of demand
+                st.markdown("---")
+                st.markdown("**High Demand Areas (80% of Demand)**")
+                # Pickup
+                pickup_counts = df['Pickup Area'].value_counts()
+                pickup_cumsum = pickup_counts.cumsum() / pickup_counts.sum()
+                pickup_80 = pickup_cumsum[pickup_cumsum <= 0.8].index.tolist()
+                st.markdown(f"**Pickup Areas (80% of demand, {len(pickup_80)} areas):**")
+                st.write(", ".join(pickup_80))
+                # Dropoff
+                dropoff_counts = df['Dropoff Area'].value_counts()
+                dropoff_cumsum = dropoff_counts.cumsum() / dropoff_counts.sum()
+                dropoff_80 = dropoff_cumsum[dropoff_cumsum <= 0.8].index.tolist()
+                st.markdown(f"**Dropoff Areas (80% of demand, {len(dropoff_80)} areas):**")
+                st.write(", ".join(dropoff_80))
             else:
                 st.error("No data available for postcode demand analysis.")
 
@@ -771,20 +786,66 @@ if df is not None:
                 df_temp['Timestamp'] = pd.to_datetime(df_temp['Timestamp'])
                 df_temp['Hour'] = df_temp['Timestamp'].dt.hour
                 df_temp['Day_of_Week'] = df_temp['Timestamp'].dt.day_name()
+                df_temp['Week_of_Year'] = df_temp['Timestamp'].dt.isocalendar().week
+                df_temp['Month'] = df_temp['Timestamp'].dt.month
                 
+                # Hourly and Daily patterns
                 col1, col2 = st.columns(2)
                 
                 with col1:
                     st.markdown("**Hourly Trip Demand**")
                     hourly_demand = df_temp.groupby('Hour').size()
-                    st.bar_chart(hourly_demand)
+                    st.line_chart(hourly_demand)
                 
                 with col2:
                     st.markdown("**Daily Trip Demand**")
                     daily_demand = df_temp.groupby('Day_of_Week').size()
                     day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
                     daily_demand = daily_demand.reindex(day_order, fill_value=0)
-                    st.bar_chart(daily_demand)
+                    st.line_chart(daily_demand)
+                
+                # Weekly patterns
+                st.markdown("---")
+                st.markdown("**Weekly Demand Patterns**")
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown("**Weekly Demand Trend**")
+                    weekly_demand = df_temp.groupby('Week_of_Year').size()
+                    st.line_chart(weekly_demand)
+                
+                with col2:
+                    st.markdown("**Monthly Demand Distribution**")
+                    monthly_demand = df_temp.groupby('Month').size()
+                    month_names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                    monthly_demand.index = [month_names[i-1] for i in monthly_demand.index]
+                    st.bar_chart(monthly_demand)
+                
+                # Weekly statistics
+                st.markdown("---")
+                st.markdown("**Weekly Demand Statistics**")
+                
+                weekly_stats = df_temp.groupby('Week_of_Year').agg({
+                    'Total Amount (£)': ['sum', 'mean', 'count']
+                }).round(2)
+                weekly_stats.columns = ['Total Revenue', 'Avg Revenue per Trip', 'Trip Count']
+                weekly_stats = weekly_stats.sort_values('Trip Count', ascending=False)
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown("**Top 10 Busiest Weeks**")
+                    st.dataframe(weekly_stats.head(10))
+                
+                with col2:
+                    st.markdown("**Weekly Revenue Analysis**")
+                    avg_weekly_revenue = weekly_stats['Total Revenue'].mean()
+                    best_week = weekly_stats['Total Revenue'].idxmax()
+                    best_week_revenue = weekly_stats.loc[best_week, 'Total Revenue']
+                    st.metric("Average Weekly Revenue", f"£{avg_weekly_revenue:,.0f}")
+                    st.metric("Best Week Revenue", f"£{best_week_revenue:,.0f} (Week {best_week})")
                 
                 output = run_analysis_with_streamlit_output(analyzer, "temporal")
                 st.text(output)
