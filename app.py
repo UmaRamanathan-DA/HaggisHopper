@@ -946,7 +946,7 @@ if df is not None:
                 import matplotlib.pyplot as plt
                 import seaborn as sns
                 metrics = [
-                    ('Demand', df.groupby('hour').size(), 'Demand'),
+                    #('Demand', df.groupby('hour').size(), 'Demand'),
                     ('Distance (km)', df, 'Distance (km)'),
                     ('Duration (minutes)', df, 'Duration (minutes)'),
                     ('Fare Amount (£)', df, 'Fare Amount (£)'),
