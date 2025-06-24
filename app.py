@@ -1732,5 +1732,18 @@ if df is not None:
         if len(st.session_state.analysis_results) == total_sections:
             st.success("🎉 All analysis complete! Explore each section above.")
     
+        st.markdown("---")
+        st.markdown("### Identifying frequented routes through origin and destination post code areas")
+        st.markdown("This heatmap visualizes the frequency of trips between each pair of pickup and dropoff postcode areas, helping to identify the most popular routes.")
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        trip_matrix = df.pivot_table(index='Pickup Area', columns='Dropoff Area', values='Timestamp', aggfunc='count', fill_value=0)
+        fig, ax = plt.subplots(figsize=(18, 6))
+        sns.heatmap(trip_matrix, cmap='magma', ax=ax, cbar=True)
+        ax.set_title('Heatmap of Trip Counts between Post Code Areas', fontsize=18, fontweight='bold')
+        ax.set_xlabel('Dropoff Postcode', fontsize=14)
+        ax.set_ylabel('Pickup Postcode', fontsize=14)
+        st.pyplot(fig)
+
 else:
     st.info("Upload a CSV file or use the sample data to begin analysis.") 
