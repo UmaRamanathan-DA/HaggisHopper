@@ -68,15 +68,28 @@ except ImportError:
     TENSORFLOW_AVAILABLE = False
     st.info("TensorFlow not available. LSTM models will be skipped.")
 
-# Custom CSS to make expander headers bold and larger
+# Custom CSS for all expander headers (apply only once at the top)
 st.markdown("""
 <style>
     .st-expander > summary {
-        font-weight: bold;
-        font-size: 1.2rem;
+        background-color: #f5f7fa !important;
+        border: 2px solid #2b6cb0 !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 1.15rem !important;
+        color: #2b2d42 !important;
+        padding: 8px 16px !important;
+        margin-bottom: 6px !important;
+    }
+    .st-expander[open] > summary {
+        background-color: #e3e8f0 !important;
+        border-color: #3182ce !important;
+        color: #1a202c !important;
     }
 </style>
 """, unsafe_allow_html=True)
+
+# (Remove any previous expander CSS blocks to avoid conflicts)
 
 # Try to import the analyzer with error handling
 try:
