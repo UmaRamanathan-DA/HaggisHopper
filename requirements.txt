@@ -10,5 +10,4 @@ geopandas==0.14.0
 holidays==0.30
 lightgbm==4.1.0
 xgboost==2.0.1
-#tensorflow==2.10.0
 statsmodels==0.14.0
