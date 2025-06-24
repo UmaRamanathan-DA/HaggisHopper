@@ -365,23 +365,23 @@ if df is not None:
     st.sidebar.header("Report Navigation")
     
     sections = [
-        ("1. Data Overview", None, "data_overview"),
-        ("2. Descriptive Statistics", None, "descriptive_stats"),
-        ("3. Data Quality Assessment", None, "data_quality"),
-        ("4. Data Cleaning", None, "data_cleaning"),
-        ("5. Feature Engineering", None, "feature_engineering"),
-        ("6. Processed and Cleansed Dataset", None, "processed_cleansed"),
-        ("7. Postcode Demand Analysis", None, "postcode_demand"),
-        ("8. Demand Analysis", None, "demand_analysis"),
-        ("9. Outlier Analysis", "outlier", "outlier"),
-        ("10. Correlation Analysis", "correlation", "correlation"),
-        ("11. Temporal Analysis", "temporal", "temporal"),
-        ("12. Hourly Variations and Outliers in Key Taxi Metrics: Demand, Distance, Duration, Fare, Tip, and Total Amount", None, "hourly_variations"),
-        ("13. Revenue Analysis", "revenue", "revenue"),
-        ("14. Clustering Analysis", "clustering", "clustering"),
-        ("15. Hour-Ahead Demand Forecasting", None, "demand_forecast"),
-        ("16. Business Insights", "business", "business"),
-        ("17. Geospatial Revenue Map", None, "geospatial_map")
+        ("Data Overview", None, "data_overview"),
+        ("Descriptive Statistics", None, "descriptive_stats"),
+        ("Data Quality Assessment", None, "data_quality"),
+        ("Data Cleaning", None, "data_cleaning"),
+        ("Feature Engineering", None, "feature_engineering"),
+        ("Processed and Cleansed Dataset", None, "processed_cleansed"),
+        ("Postcode Demand Analysis", None, "postcode_demand"),
+        ("Demand Analysis", None, "demand_analysis"),
+        ("Outlier Analysis", "outlier", "outlier"),
+        ("Correlation Analysis", "correlation", "correlation"),
+        ("Temporal Analysis", "temporal", "temporal"),
+        ("Hourly Variations and Outliers in Key Taxi Metrics: Demand, Distance, Duration, Fare, Tip, and Total Amount", None, "hourly_variations"),
+        ("Revenue Analysis", "revenue", "revenue"),
+        ("Clustering Analysis", "clustering", "clustering"),
+        ("Hour-Ahead Demand Forecasting", None, "demand_forecast"),
+        ("Business Insights", "business", "business"),
+        ("Geospatial Revenue Map", None, "geospatial_map")
     ]
     
     if st.session_state.analysis_complete:
@@ -707,23 +707,23 @@ if df is not None:
         
         # Add to navigation pane
         sections = [
-            ("1. Data Overview", None, "data_overview"),
-            ("2. Descriptive Statistics", None, "descriptive_stats"),
-            ("3. Data Quality Assessment", None, "data_quality"),
-            ("4. Data Cleaning", None, "data_cleaning"),
-            ("5. Feature Engineering", None, "feature_engineering"),
-            ("6. Processed and Cleansed Dataset", None, "processed_cleansed"),
-            ("7. Postcode Demand Analysis", None, "postcode_demand"),
-            ("8. Demand Analysis", None, "demand_analysis"),
-            ("9. Outlier Analysis", "outlier", "outlier"),
-            ("10. Correlation Analysis", "correlation", "correlation"),
-            ("11. Temporal Analysis", "temporal", "temporal"),
-            ("12. Hourly Variations and Outliers in Key Taxi Metrics: Demand, Distance, Duration, Fare, Tip, and Total Amount", None, "hourly_variations"),
-            ("13. Revenue Analysis", "revenue", "revenue"),
-            ("14. Clustering Analysis", "clustering", "clustering"),
-            ("15. Hour-Ahead Demand Forecasting", None, "demand_forecast"),
-            ("16. Business Insights", "business", "business"),
-            ("17. Geospatial Revenue Map", None, "geospatial_map")
+            ("Data Overview", None, "data_overview"),
+            ("Descriptive Statistics", None, "descriptive_stats"),
+            ("Data Quality Assessment", None, "data_quality"),
+            ("Data Cleaning", None, "data_cleaning"),
+            ("Feature Engineering", None, "feature_engineering"),
+            ("Processed and Cleansed Dataset", None, "processed_cleansed"),
+            ("Postcode Demand Analysis", None, "postcode_demand"),
+            ("Demand Analysis", None, "demand_analysis"),
+            ("Outlier Analysis", "outlier", "outlier"),
+            ("Correlation Analysis", "correlation", "correlation"),
+            ("Temporal Analysis", "temporal", "temporal"),
+            ("Hourly Variations and Outliers in Key Taxi Metrics: Demand, Distance, Duration, Fare, Tip, and Total Amount", None, "hourly_variations"),
+            ("Revenue Analysis", "revenue", "revenue"),
+            ("Clustering Analysis", "clustering", "clustering"),
+            ("Hour-Ahead Demand Forecasting", None, "demand_forecast"),
+            ("Business Insights", "business", "business"),
+            ("Geospatial Revenue Map", None, "geospatial_map")
         ]
 
         # Numbered and linked section for processed and cleansed dataset
