@@ -370,6 +370,7 @@ if df is not None:
         ("Data Quality Assessment", None, "data_quality"),
         ("Data Cleaning", None, "data_cleaning"),
         ("Feature Engineering", None, "feature_engineering"),
+        ("6. Processed and Cleansed Dataset", None, "processed_cleansed"),
         ("Postcode Demand Analysis", None, "postcode_demand"),
         ("Outlier Analysis", "outlier", "outlier"),
         ("Correlation Analysis", "correlation", "correlation"),
@@ -702,19 +703,35 @@ if df is not None:
 
         display_analysis_section("Feature Engineering", 5, analyzer, df, custom_content=feature_engineering_content)
         
-        # After Feature Engineering section
-        with st.expander('Processed and Cleansed Dataset', expanded=False):
+        # Add to navigation pane
+        sections = [
+            ("Data Overview", None, "data_overview"),
+            ("Descriptive Statistics", None, "descriptive_stats"),
+            ("Data Quality Assessment", None, "data_quality"),
+            ("Data Cleaning", None, "data_cleaning"),
+            ("Feature Engineering", None, "feature_engineering"),
+            ("6. Processed and Cleansed Dataset", None, "processed_cleansed"),
+            ("Postcode Demand Analysis", None, "postcode_demand"),
+            ("Outlier Analysis", "outlier", "outlier"),
+            ("Correlation Analysis", "correlation", "correlation"),
+            ("Temporal Analysis", "temporal", "temporal"),
+            ("Revenue Analysis", "revenue", "revenue"),
+            ("Clustering Analysis", "clustering", "clustering"),
+            ("Hour-Ahead Demand Forecasting", None, "demand_forecast"),
+            ("Business Insights", "business", "business"),
+            ("Geospatial Revenue Map", None, "geospatial_map")
+        ]
+
+        # Numbered and linked section for processed and cleansed dataset
+        st.markdown("<div id='processed_cleansed'></div>", unsafe_allow_html=True)
+        with st.expander('6. Processed and Cleansed Dataset', expanded=False):
             st.markdown('This is the final processed and cleansed dataset used for EDA, including all engineered features such as hour of the day.')
-            # Show dataframe
             st.dataframe(df, use_container_width=True)
-            # Show datatypes
             st.markdown('**Column Data Types:**')
             dtype_df = pd.DataFrame({'Column': df.columns, 'Data Type': df.dtypes.astype(str).values})
             st.dataframe(dtype_df, use_container_width=True, hide_index=True)
-            # Show total rows and columns
             st.markdown(f"**Total Rows:** {df.shape[0]}")
             st.markdown(f"**Total Columns:** {df.shape[1]}")
-            # Show comparison with original dataset
             if 'original_df' in st.session_state:
                 orig_cols = st.session_state.original_df.shape[1]
                 proc_cols = df.shape[1]
