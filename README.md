@@ -37,9 +37,7 @@ Your CSV file should include these columns:
 - `Payment Type` - Payment method
 - `Passenger Count` - Number of passengers
 
-## 📋 Analysis Sections
-
-## 📊 Report Navigation
+## 📋 Analysis Sections - Report Navigation
 
 1. **Data Overview**
 2. **Descriptive Statistics**
