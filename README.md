@@ -1,6 +1,6 @@
 # 🚕 Haggis Hopper Taxi Demand Analysis Dashboard
 
-A comprehensive interactive dashboard for analyzing taxi demand, revenue patterns, and business insights for Haggis Hopper taxi service.
+A comprehensive interactive dashboard for analyzing taxi demand, revenue patterns, and business insights for Haggis Hopper taxi service. Has 
 
 ## 📊 Features
 
@@ -8,34 +8,10 @@ A comprehensive interactive dashboard for analyzing taxi demand, revenue pattern
 - **Comprehensive Analytics**: 10 different analysis sections
 - **Real-time Results**: Selective reloading with progress tracking
 - **Business Intelligence**: Actionable insights and recommendations
-- **Predictive Modeling**: Machine learning for fare prediction
+- **Hour Ahead Forecasting**: Forecasting Models
 - **Customer Segmentation**: Clustering analysis for customer groups
 
-## 🚀 Quick Start
-
-### Local Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/HaggisHopper.git
-   cd HaggisHopper
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Run the app**
-   ```bash
-   streamlit run app.py
-   ```
-
-4. **Open in browser**
-   Navigate to `http://localhost:8501`
-
 ## 📁 Project Structure
-
 ```
 Haggis Hopper/
 ├── app.py                              # Main Streamlit application
@@ -61,89 +37,27 @@ Your CSV file should include these columns:
 - `Payment Type` - Payment method
 - `Passenger Count` - Number of passengers
 
-## 🎯 Key Features
+## 📋 Analysis Sections - Report Navigation
 
-### **Selective Analysis**
-- Run individual analysis sections
-- Real-time progress tracking
-- Cached results for efficiency
+1. **Data Overview**
+2. **Descriptive Statistics**
+3. **Data Quality Assessment**
+4. **Data Cleaning**
+5. **Feature Engineering**
+6. **Processed and Cleansed Dataset**
+7. **Postcode Demand Analysis**
+8. **Demand Analysis**
+9. **Outlier Analysis**
+10. **Correlation Analysis**
+11. **Temporal Analysis**
+12. **Hourly Variations and Outliers in Key Taxi Metrics**  
+    _Demand, Distance, Duration, Fare, Tip, and Total Amount_
+13. **Revenue Analysis**
+14. **Clustering Analysis**
+15. **Hour-Ahead Demand Forecasting**
+16. **Business Insights**
+17. **Geospatial Revenue Map**
 
-### **Comprehensive Insights**
-- Statistical interpretations
-- Business recommendations
-- Performance assessments
-- Actionable strategies
-
-### **Interactive Visualizations**
-- Correlation heatmaps
-- Temporal pattern charts
-- Revenue distribution plots
-- Customer segmentation
-
-## 🌐 Deployment Options
-
-### Option 1: Streamlit Cloud (Recommended - Free)
-
-1. **Go to [share.streamlit.io](https://share.streamlit.io)**
-2. **Sign in with your GitHub account**
-3. **Click "New app"**
-4. **Select your repository**: `HaggisHopper`
-5. **Set the main file path**: `app.py`
-6. **Click "Deploy"**
-
-Your app will be available at: `https://your-app-name-your-username.streamlit.app`
-
-### Option 2: Heroku
-
-1. **Install Heroku CLI**
-2. **Login to Heroku**:
-   ```bash
-   heroku login
-   ```
-3. **Create Heroku app**:
-   ```bash
-   heroku create your-haggis-hopper-app
-   ```
-4. **Deploy**:
-   ```bash
-   git add .
-   git commit -m "Deploy to Heroku"
-   git push heroku main
-   ```
-
-### Option 3: Railway
-
-1. **Go to [railway.app](https://railway.app)**
-2. **Sign in with GitHub**
-3. **Click "New Project"**
-4. **Select "Deploy from GitHub repo"**
-5. **Select your repository**
-6. **Railway will auto-detect and deploy your Streamlit app**
-
-## 📋 Analysis Sections
-
-1. **Data Overview** - Basic dataset information
-2. **Descriptive Statistics** - Benchmark values and distributions
-3. **Data Quality Assessment** - Missing values and duplicates
-4. **Outlier Analysis** - Statistical outlier detection
-5. **Correlation Analysis** - Variable relationships
-6. **Temporal Analysis** - Time-based patterns
-7. **Revenue Analysis** - Financial insights
-8. **Clustering Analysis** - Customer segmentation
-9. **Predictive Modeling** - Fare prediction models
-10. **Business Insights** - Strategic recommendations
-
-## 🔧 Customization
-
-### Adding New Analysis
-1. Add method to `HaggisHopperAnalyzer` class
-2. Update `run_analysis_with_streamlit_output` function
-3. Add section to Streamlit app
-
-### Modifying Visualizations
-- Edit matplotlib/seaborn plots in analysis methods
-- Customize Streamlit display components
-- Adjust color schemes and layouts
 
 ## 📈 Business Applications
 
@@ -153,21 +67,5 @@ Your app will be available at: `https://your-app-name-your-username.streamlit.ap
 - **Operational Planning**: Route optimization and capacity planning
 - **Predictive Analytics**: Fare estimation and demand forecasting
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 📞 Support
-
-For questions or support, please open an issue on GitHub or contact the development team.
-
----
 
 **Built with ❤️ using Streamlit, Pandas, and Python** 
